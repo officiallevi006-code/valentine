@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine?</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:#000;
+  color:white;
+  overflow:hidden;
+}
+
+/* PAGE SYSTEM */
+.page{
+  display:none;
+  min-height:100vh;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:40px;
+  position:relative;
+}
+
+.page.active{
+  display:flex;
+  flex-direction:column;
+}
+
+/* HEADINGS */
+h1{
+  font-size:2.6rem;
+  font-weight:900;
+  margin-bottom:25px;
+}
+
+/* BUTTONS */
+.btn{
+  padding:15px 35px;
+  border:none;
+  border-radius:40px;
+  font-size:1.2rem;
+  font-weight:900;
+  cursor:pointer;
+  margin:10px;
+}
+
+.yes{
+  background:#ff4d6d;
+  color:white;
+  font-size:1.4rem;
+}
+
+.no{
+  background:white;
+  color:#ff4d6d;
+  position:absolute;
+}
+
+/* TAUNTS */
+.taunt{
+  position:fixed;
+  font-size:1.1rem;
+  font-weight:900;
+  background:rgba(0,0,0,0.6);
+  padding:10px 18px;
+  border-radius:20px;
+  animation:fadeUp 1.5s ease forwards;
+  pointer-events:none;
+  z-index:999;
+}
+
+@keyframes fadeUp{
+  0%{opacity:0; transform:translateY(10px);}
+  20%{opacity:1;}
+  100%{opacity:0; transform:translateY(-25px);}
+}
+
+/* HOME */
+#home{
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+}
+
+/* GIFTS */
+#gifts{
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+}
+
+.gifts{
+  display:flex;
+  gap:30px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.gift-box{
+  background:rgba(255,255,255,0.25);
+  border-radius:20px;
+  padding:20px;
+  width:220px;
+  cursor:pointer;
+  transition:0.4s;
+}
+
+.gift-box:hover{
+  transform:translateY(-15px) scale(1.05);
+}
+
+.gift-img{
+  width:100%;
+  border-radius:15px;
+}
+
+.gift-title{
+  font-weight:900;
+  margin-top:10px;
+}
+
+.gift-caption{
+  font-size:0.95rem;
+  font-weight:700;
+  margin-top:5px;
+}
+
+.text-gift{
+  font-size:1.15rem;
+  font-weight:900;
+  padding-top:40px;
+}
+
+/* FINAL PAGE */
+#final{
+  background:#000;
+  overflow:hidden;
+}
+
+/* PHOTO GRID */
+.collage{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:1;
+}
+
+.photo-grid{
+  width:90%;
+  max-width:1100px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.photo-grid img{
+  width:100%;
+  height:200px;
+  object-fit:contain;
+  background:#000;
+  border-radius:14px;
+  opacity:0.85;
+}
+
+/* DARK OVERLAY */
+#final::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  z-index:1;
+}
+
+/* TEXT BOX */
+.text-box{
+  position:relative;
+  z-index:2;
+  max-width:900px;
+  background:rgba(0,0,0,0.55);
+  padding:35px;
+  border-radius:25px;
+  font-size:1.15rem;
+  font-weight:900;
+  line-height:1.8;
+  margin-top:40px;
+}
+
+/* HEARTS */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:24px;
+  animation:floatUp 6s linear infinite;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-110vh);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUDIO (USER-TRIGGERED) -->
+<audio id="bgMusic" loop>
+  <source src="Hey Lover! (2).mp3" type="audio/mpeg">
+</audio>
+
+<!-- HOME -->
+<div class="page active" id="home">
+  <h1>Will you be my Valentine? 💖</h1>
+  <button class="btn yes" onclick="startLove()">YES</button>
+  <button class="btn no" id="noBtn">NO</button>
+</div>
+
+<!-- NO CONFIRM -->
+<div class="page" id="noPage">
+  <h1>You really gonna do that to me??? 😭</h1>
+  <button class="btn yes" onclick="goTo('sad')">Confirm</button>
+</div>
+
+<!-- SAD -->
+<div class="page" id="sad">
+  <h1>Please don’t do that to me 🥺💧</h1>
+  <button class="btn yes" onclick="goTo('home')">Okay fine</button>
+</div>
+
+<!-- GIFTS -->
+<div class="page" id="gifts">
+  <h1>Pick your gift 🎁</h1>
+
+  <div class="gifts">
+
+    <div class="gift-box" onclick="goTo('final')">
+      <img src="chocolate-bouquet.jpeg" class="gift-img">
+      <p class="gift-title">Bouquet of Chocolates 🍫</p>
+      <p class="gift-caption">a sweet bouquet of chocolates for my bhukad girl 💕</p>
+    </div>
+
+    <div class="gift-box" onclick="goTo('final')">
+      <img src="flower-bouquet.jpeg" class="gift-img">
+      <p class="gift-title">Bouquet of Flowers 🌹</p>
+      <p class="gift-caption">a cute bouquet of flowers for an even cuter girl 🌸</p>
+    </div>
+
+    <div class="gift-box text-gift" onclick="goTo('final')">
+      Anythinggg you want<br>
+      <small>(hugs and kisses for example 😝)</small>
+    </div>
+
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="page" id="final">
+
+  <div class="collage">
+    <div class="photo-grid">
+      <img src="P1.jpg"><img src="P2.jpg"><img src="P3.jpg">
+      <img src="P4.jpg"><img src="P5.jpg"><img src="P6.jpg">
+      <img src="P7.jpg"><img src="P8.jpg"><img src="P9.jpg">
+    </div>
+  </div>
+
+  <div class="text-box">
+    VERNIKA, you are the best person I have ever met,<br>
+    and I am so, so, so fuckinggg grateful to have you in my life.<br>
+    You have been there for me when no one else was,<br>
+    and you made me feel truly loved in ways I can’t explain.<br>
+    You are the greatest thing to ever happen to me.<br>
+    Thank you for giving me the honor to be your Valentine.<br>
+    I LOVE YOUUU 3000 ❤️❤️❤️
+  </div>
+
+</div>
+
+<script>
+const music = document.getElementById("bgMusic");
+
+function startLove(){
+  music.play();
+  goTo('gifts');
+}
+
+/* NO BUTTON TAUNTS */
+const noBtn = document.getElementById("noBtn");
+const taunts = [
+  "Nice try 😏",
+  "Just click YES already 🙄",
+  "Why you running 😂",
+  "The audacity 😤",
+  "You thought 💅",
+  "Caught in 4K 📸"
+];
+
+noBtn.addEventListener("mouseover", ()=>{
+  const x = Math.random()*(window.innerWidth-120);
+  const y = Math.random()*(window.innerHeight-120);
+  noBtn.style.left = x+"px";
+  noBtn.style.top = y+"px";
+
+  const t = document.createElement("div");
+  t.className = "taunt";
+  t.innerText = taunts[Math.floor(Math.random()*taunts.length)];
+  t.style.left = (x+20)+"px";
+  t.style.top = (y-30)+"px";
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),1500);
+});
+
+/* PAGE SWITCH */
+function goTo(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* HEARTS */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤️";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},600);
+</script>
+
+</body>
+</html>
